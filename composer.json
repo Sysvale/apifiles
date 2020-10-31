@@ -1,0 +1,30 @@
+{
+    "name": "jedsonmelo/api-files",
+    "description": "A library to abstract communication with api-files",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jedson Melo",
+            "email": "jedsonmeloc@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.5"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.3",
+        "phpunit/phpunit": "^8.5.8|^9.3.3",
+        "orchestra/testbench": "^5.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "jedsonmelo\\ApiFiles\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "jedsonmelo\\ApiFiles\\Tests\\": "tests/"
+        }
+    }
+}
