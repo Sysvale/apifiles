@@ -44,12 +44,14 @@ class ApiFiles
 			throw new \InvalidArgumentException('The api_file_id argument can\'t be empty string');
 		}
 
+		$access_token = config('apifiles.access_token');
+		$url = config('apifiles.url');
 		$response = app(Guzzle::class)->request(
 			'GET',
-			env('API_FILE_URL') . "/api/file/$api_file_id",
+			"$url/api/file/$api_file_id",
 			[
 				'headers' => [
-					'Authorization' => 'Bearer ' . env('API_FILE_TOKEN'),
+					'Authorization' => "Bearer $access_token",
 				],
 				'exceptions' => false,
 			]
@@ -68,12 +70,14 @@ class ApiFiles
 
 	public static function sendContent($content, $filename)
 	{
+		$access_token = config('apifiles.access_token');
+		$url = config('apifiles.url');
 		$response = app(Guzzle::class)->request(
 			'POST',
-			env('API_FILE_URL') . '/api/file',
+			"$url/api/file",
 			[
 				'headers' => [
-					'Authorization' => 'Bearer ' . env('API_FILE_TOKEN'),
+					'Authorization' => "Bearer $access_token",
 				],
 				'multipart' => [
 					[
