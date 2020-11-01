@@ -8,7 +8,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ApiFiles
 {
-	public static function send($filename, $delete_after = false)
+	public function send($filename, $delete_after = false)
 	{
 		if (!file_exists($filename)) {
 			throw new FileNotFoundException("the $filename file does not exist");
@@ -38,7 +38,7 @@ class ApiFiles
 		return $response;
 	}
 
-	public static function get(string $api_file_id)
+	public function get(string $api_file_id)
 	{
 		if (!$api_file_id) {
 			throw new \InvalidArgumentException('The api_file_id argument can\'t be empty string');
@@ -68,7 +68,7 @@ class ApiFiles
 		return $response;
 	}
 
-	public static function sendContent($content, $filename)
+	public function sendContent($content, $filename)
 	{
 		$access_token = config('apifiles.access_token');
 		$url = config('apifiles.url');

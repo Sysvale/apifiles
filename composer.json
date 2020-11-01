@@ -26,5 +26,15 @@
         "psr-4": {
             "jedsonmelo\\ApiFiles\\Tests\\": "tests/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "jedsonmelo\\ApiFiles\\ApiFilesServiceProvider"
+            ],
+            "aliases": {
+                "ApiFiles": "jedsonmelo\\ApiFiles\\Facades\\ApiFiles"
+            }
+        }
     }
 }

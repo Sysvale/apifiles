@@ -4,9 +4,9 @@ namespace jedsonmelo\ApiFiles\Tests\Unit;
 
 use Mockery;
 use GuzzleHttp\Client as Guzzle;
-use jedsonmelo\ApiFiles\ApiFiles;
 use jedsonmelo\ApiFiles\Tests\TestCase;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use jedsonmelo\ApiFiles\Facades\ApiFiles;
 
 class ApiFilesTest extends TestCase
 {

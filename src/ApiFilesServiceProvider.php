@@ -4,7 +4,7 @@ namespace jedsonmelo\ApiFiles;
 
 use Illuminate\Support\ServiceProvider;
 
-class ApiFilesBaseServiceProvider extends ServiceProvider
+class ApiFilesServiceProvider extends ServiceProvider
 {
 	public function boot()
 	{
@@ -16,6 +16,10 @@ class ApiFilesBaseServiceProvider extends ServiceProvider
 	public function register()
 	{
 		$this->mergeConfigFrom(__DIR__.'/../config/apifiles.php', 'apifiles');
+
+		$this->app->singleton('apifiles', function ($app) {
+			return new ApiFiles();
+		});
 	}
 
 	protected function registerPublishing()
