@@ -3,7 +3,7 @@
 namespace jedsonmelo\ApiFiles\Tests\Unit;
 
 use Mockery;
-use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\ClientInterface as Guzzle;
 use jedsonmelo\ApiFiles\Tests\TestCase;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use jedsonmelo\ApiFiles\Facades\ApiFiles;

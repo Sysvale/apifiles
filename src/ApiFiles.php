@@ -4,10 +4,18 @@ namespace jedsonmelo\ApiFiles;
 
 use GuzzleHttp\Client as Guzzle;
 use Dotenv\Exception\InvalidFileException;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ApiFiles
 {
+	private $guzzle;
+
+	public function __construct(ClientInterface $guzzle)
+	{
+		$this->guzzle = $guzzle;
+	}
+
 	public function send($filename, $delete_after = false)
 	{
 		if (!file_exists($filename)) {
@@ -21,7 +29,7 @@ class ApiFiles
 			);
 		}
 
-		$response = self::sendContent($file, $filename);
+		$response = $this->sendContent($file, $filename);
 
 		if (is_resource($file)) {
 			fclose($file);
@@ -44,18 +52,10 @@ class ApiFiles
 			throw new \InvalidArgumentException('The api_file_id argument can\'t be empty string');
 		}
 
-		$access_token = config('apifiles.access_token');
-		$url = config('apifiles.url');
-		$response = app(Guzzle::class)->request(
-			'GET',
-			"$url/api/file/$api_file_id",
-			[
-				'headers' => [
-					'Authorization' => "Bearer $access_token",
-				],
-				'exceptions' => false,
-			]
-		);
+		$response = $this->guzzle
+			->request('GET', "/api/file/$api_file_id", [
+					'exceptions' => false,
+				]);
 
 		$status_code = $response->getStatusCode();
 
@@ -70,15 +70,8 @@ class ApiFiles
 
 	public function sendContent($content, $filename)
 	{
-		$access_token = config('apifiles.access_token');
-		$url = config('apifiles.url');
-		$response = app(Guzzle::class)->request(
-			'POST',
-			"$url/api/file",
-			[
-				'headers' => [
-					'Authorization' => "Bearer $access_token",
-				],
+		$response = $this->guzzle
+			->request('POST', '/api/file', [
 				'multipart' => [
 					[
 						'name' => 'file',
@@ -86,8 +79,7 @@ class ApiFiles
 						'filename' => $filename,
 					],
 				],
-			]
-		);
+			]);
 
 		$status_code = $response->getStatusCode();
 
