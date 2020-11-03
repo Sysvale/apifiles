@@ -93,4 +93,28 @@ class ApiFiles
 
 		return $response;
 	}
+
+	public function delete($api_file_id)
+	{
+		if (!$api_file_id) {
+			throw new \InvalidArgumentException('The api_file_id argument can\'t be empty string');
+		}
+
+		$response = $this->guzzle
+			->request(
+				'DELETE',
+				"/api/file/$api_file_id",
+				['exceptions' => false]
+			);
+
+		$status_code = $response->getStatusCode();
+
+		if ($status_code != 200) {
+			throw new \RuntimeException(
+				"ApiFiles got status code $status_code on try delete the file with id $api_file_id"
+			);
+		}
+
+		return $response;
+	}
 }

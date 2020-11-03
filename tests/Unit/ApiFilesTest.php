@@ -87,6 +87,51 @@ class ApiFilesTest extends TestCase
 		$response = ApiFiles::get($response->id);
 		$this->assertEquals($content, $response->getBody()->getContents());
 	}
+
+	public function testReceiveExceptionWhenPassEmptyStringOnDeleteMethod()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('The api_file_id argument can\'t be empty string');
+		ApiFiles::delete('');
+	}
+
+	public function testDeleteReturnException()
+	{
+		$status_code = 500;
+		$id = '123';
+
+		$guzzle_mock = Mockery::mock(Guzzle::class);
+
+		$guzzle_mock->shouldReceive('request')
+			->andReturn(new DummyGuzzleResponse($status_code));
+
+		$this->app->instance(Guzzle::class, $guzzle_mock);
+
+		$this->expectException(\RuntimeException::class);
+		$this->expectExceptionMessage(
+			"ApiFiles got status code $status_code on try delete the file with id $id"
+		);
+
+		ApiFiles::delete($id);
+	}
+
+	public function testDelete()
+	{
+		$status_code = 200;
+		$id = '123';
+		$content = 'patricia';
+
+		$guzzle_mock = Mockery::mock(Guzzle::class);
+
+		$guzzle_mock->shouldReceive('request')
+			->andReturn(new DummyGuzzleResponse($status_code, $content));
+
+		$this->app->instance(Guzzle::class, $guzzle_mock);
+
+		$response = ApiFiles::delete($id);
+
+		$this->assertSame($content, $response->getContents());
+	}
 }
 
 //phpcs:ignore
