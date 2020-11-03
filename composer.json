@@ -1,12 +1,13 @@
 {
-    "name": "jedsonmelo/api-files",
+    "version": "1.0.0",
+    "name": "sysvale/api-files",
     "description": "A library to abstract communication with api-files",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Jedson Melo",
-            "email": "jedsonmeloc@gmail.com"
+            "name": "Sysvale",
+            "email": "dev@sysvale.com"
         }
     ],
     "require": {
@@ -19,12 +20,12 @@
     },
     "autoload": {
         "psr-4": {
-            "jedsonmelo\\ApiFiles\\": "src/"
+            "Sysvale\\ApiFiles\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "jedsonmelo\\ApiFiles\\Tests\\": "tests/"
+            "Sysvale\\ApiFiles\\Tests\\": "tests/"
         }
     },
     "extra": {
