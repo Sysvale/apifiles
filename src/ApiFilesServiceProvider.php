@@ -1,9 +1,8 @@
 <?php
 
-namespace jedsonmelo\ApiFiles;
+namespace Sysvale\ApiFiles;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Client as Guzzle;
+use Sysvale\ApiFiles\ApiFilesClient;
 use Illuminate\Support\ServiceProvider;
 
 class ApiFilesServiceProvider extends ServiceProvider
@@ -31,10 +30,10 @@ class ApiFilesServiceProvider extends ServiceProvider
 
 	protected function registerFacades()
 	{
-		$this->app->bind(ClientInterface::class, function ($app) {
+		$this->app->bind(ApiFilesClient::class, function ($app) {
 			$access_token = config('apifiles.access_token');
 
-			return new Guzzle([
+			return new ApiFilesClient([
 				'base_uri' => config('apifiles.url'),
 				'headers' => [
 					'Authorization' => "Bearer $access_token",

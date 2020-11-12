@@ -1,17 +1,16 @@
 <?php
 
-namespace jedsonmelo\ApiFiles;
+namespace Sysvale\ApiFiles;
 
-use GuzzleHttp\Client as Guzzle;
+use Sysvale\ApiFiles\ApiFilesClient;
 use Dotenv\Exception\InvalidFileException;
-use GuzzleHttp\ClientInterface;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ApiFiles
 {
 	private $guzzle;
 
-	public function __construct(ClientInterface $guzzle)
+	public function __construct(ApiFilesClient $guzzle)
 	{
 		$this->guzzle = $guzzle;
 	}
