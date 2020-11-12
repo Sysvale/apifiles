@@ -1,12 +1,16 @@
 <?php
 
-namespace jedsonmelo\ApiFiles\Tests\Unit;
+namespace Sysvale\ApiFiles\Tests\Unit;
 
 use Mockery;
-use GuzzleHttp\ClientInterface as Guzzle;
-use jedsonmelo\ApiFiles\Tests\TestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Handler\MockHandler;
+use Sysvale\ApiFiles\ApiFilesClient;
+use Sysvale\ApiFiles\Tests\TestCase;
+use Sysvale\ApiFiles\Facades\ApiFiles;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use jedsonmelo\ApiFiles\Facades\ApiFiles;
 
 class ApiFilesTest extends TestCase
 {
@@ -20,12 +24,12 @@ class ApiFilesTest extends TestCase
 
 	public function testSendFile()
 	{
-		$mock = Mockery::mock(Guzzle::class);
+		$mock = Mockery::mock(ApiFilesClient::class);
 
 		$mock->shouldReceive('request')
 			->andReturn(new DummyGuzzleResponse);
 
-		$this->app->instance(Guzzle::class, $mock);
+		$this->app->instance(ApiFilesClient::class, $mock);
 
 		$filename = __DIR__ . '/../Support/Stubs/dummy_file';
 		$response = ApiFiles::send($filename);
@@ -35,12 +39,12 @@ class ApiFilesTest extends TestCase
 
 	public function testGetInvalidFile()
 	{
-		$guzzle_mock = Mockery::mock(Guzzle::class);
+		$client = Mockery::mock(ApiFilesClient::class);
 
-		$guzzle_mock->shouldReceive('request')
+		$client->shouldReceive('request')
 			->andReturn(new DummyGuzzleResponse(404));
 
-		$this->app->instance(Guzzle::class, $guzzle_mock);
+		$this->app->instance(ApiFilesClient::class, $client);
 
 		$file = 'arquivo-que-nao-existe.zip';
 		$this->expectException(\RuntimeException::class);
@@ -53,12 +57,12 @@ class ApiFilesTest extends TestCase
 
 	public function testGetFile()
 	{
-		$mock = Mockery::mock(Guzzle::class);
+		$client_mock = Mockery::mock(ApiFilesClient::class);
 
-		$mock->shouldReceive('request')
+		$client_mock->shouldReceive('request')
 			->andReturn(new DummyGuzzleResponse);
 
-		$this->app->instance(Guzzle::class, $mock);
+		$this->app->instance(ApiFilesClient::class, $client_mock);
 
 		$response = ApiFiles::get('test.png');
 
@@ -73,13 +77,13 @@ class ApiFilesTest extends TestCase
 
 	public function testSendContents()
 	{
-		$mock = Mockery::mock(Guzzle::class);
+		$client_mock = Mockery::mock(ApiFilesClient::class);
 
 		$content = 'biscoito';
-		$mock->shouldReceive('request')
+		$client_mock->shouldReceive('request')
 			->andReturn(new DummyGuzzleResponse(200, $content));
 
-		$this->app->instance(Guzzle::class, $mock);
+		$this->app->instance(ApiFilesClient::class, $client_mock);
 
 		$response = ApiFiles::sendContent($content, 'nome.txt', 'deu erro');
 		$this->assertNotNull($response->id);
@@ -100,12 +104,12 @@ class ApiFilesTest extends TestCase
 		$status_code = 500;
 		$id = '123';
 
-		$guzzle_mock = Mockery::mock(Guzzle::class);
+		$client_mock = Mockery::mock(ApiFilesClient::class);
 
-		$guzzle_mock->shouldReceive('request')
+		$client_mock->shouldReceive('request')
 			->andReturn(new DummyGuzzleResponse($status_code));
 
-		$this->app->instance(Guzzle::class, $guzzle_mock);
+		$this->app->instance(ApiFilesClient::class, $client_mock);
 
 		$this->expectException(\RuntimeException::class);
 		$this->expectExceptionMessage(
@@ -121,16 +125,43 @@ class ApiFilesTest extends TestCase
 		$id = '123';
 		$content = 'patricia';
 
-		$guzzle_mock = Mockery::mock(Guzzle::class);
+		$client_mock = Mockery::mock(ApiFilesClient::class);
 
-		$guzzle_mock->shouldReceive('request')
+		$client_mock->shouldReceive('request')
 			->andReturn(new DummyGuzzleResponse($status_code, $content));
 
-		$this->app->instance(Guzzle::class, $guzzle_mock);
+		$this->app->instance(ApiFilesClient::class, $client_mock);
 
 		$response = ApiFiles::delete($id);
 
 		$this->assertSame($content, $response->getContents());
+	}
+
+	public function testIfRequestIsMadeToCorrectUri()
+	{
+		$response = new Response(200, ['X-Foo' => 'Bar'], '');
+		$mock = new MockHandler([$response]);
+		$handlerStack = HandlerStack::create($mock);
+
+		$container = [];
+		$history = Middleware::history($container);
+		$handlerStack->push($history);
+
+		$base_uri = 'foo.bar.com';
+		$client = new ApiFilesClient([
+			'base_uri' => "https://$base_uri",
+			'handler' => $handlerStack
+		]);
+
+		$this->app->instance(ApiFilesClient::class, $client);
+
+		$filename = __DIR__ . '/../Support/Stubs/dummy_file';
+		ApiFiles::send($filename);
+
+		$request = $container[0]['request'];
+
+		$this->assertSame($base_uri, $request->getUri()->getHost());
+		$this->assertSame('/api/file', $request->getUri()->getPath());
 	}
 }
 

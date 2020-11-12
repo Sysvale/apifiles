@@ -1,6 +1,6 @@
 <?php
 
-namespace jedsonmelo\ApiFiles\Facades;
+namespace Sysvale\ApiFiles\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

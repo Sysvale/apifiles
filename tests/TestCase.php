@@ -1,8 +1,8 @@
 <?php
 
-namespace jedsonmelo\ApiFiles\Tests;
+namespace Sysvale\ApiFiles\Tests;
 
-use jedsonmelo\ApiFiles\ApiFilesServiceProvider;
+use Sysvale\ApiFiles\ApiFilesServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
