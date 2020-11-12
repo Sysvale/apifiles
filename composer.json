@@ -31,10 +31,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "jedsonmelo\\ApiFiles\\ApiFilesServiceProvider"
+                "Sysvale\\ApiFiles\\ApiFilesServiceProvider"
             ],
             "aliases": {
-                "ApiFiles": "jedsonmelo\\ApiFiles\\Facades\\ApiFiles"
+                "ApiFiles": "Sysvale\\ApiFiles\\Facades\\ApiFiles"
             }
         }
     }
