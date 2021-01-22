@@ -1,0 +1,5 @@
+apifiles:
+  build: ./.docker/.
+  volumes:
+    - ./:/var/www/
+  stdin_open: true
