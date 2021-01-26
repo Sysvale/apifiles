@@ -15,4 +15,4 @@ VOLUME /var/www
 
 CMD ["/bin/sh"]
 
-ENTRYPOINT ["/bin/sh", "-c"]
+ENTRYPOINT ["/bin/sh", "-c", "composer install"]
