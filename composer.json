@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "^6.5"
+        "guzzlehttp/guzzle": "^7.2"
     },
     "require-dev": {
         "mockery/mockery": "^1.3",
